@@ -2,94 +2,124 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>مسابقة ميلاد المسيح</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مسابقة عيد الميلاد</title>
+    <style>
+        body {
+            background-color: #0a2e1a;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+        .quiz-container {
+            background: #fff;
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .option {
+            background: #f0f0f0;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+        .option:hover { background: #e0e0e0; }
+        .correct { background: #27ae60 !important; color: white; }
+        .wrong { background: #c0392b !important; color: white; }
+        .disabled { pointer-events: none; }
+        #next-btn {
+            background: #c0392b;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+            display: none;
+            margin-top: 15px;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
 
-    <div class="card">
-        <!-- From Uiverse.io by andrew-demchenk0 --> 
-<div class="loader">
-   <div data-glitch="Loading..." class="glitch">Loading...</div>
+<div class="quiz-container" id="quiz-box">
+    <h2 style="color: #c0392b;">🎄 مسابقة الميلاد المجيد</h2>
+    <p id="question" style="font-size: 1.2em; font-weight: bold;"></p>
+    <div id="options"></div>
+    <button id="next-btn">السؤال التالي</button>
 </div>
-        <h2 style="color: #c0392b;">🎄 مسابقة الميلاد</h2>
-        <div id="q-text" style="font-size: 1.2em; font-weight: bold; margin-bottom: 15px;"></div>
-        <div id="options-grid"></div>
-        <button id="next-btn">السؤال التالي</button>
-        <div id="result" style="display:none;">
-            <h3>انتهت المسابقة! ✨</h3>
-            <h2 id="final-score" style="color:#27ae60"></h2>
-            <button onclick="location.reload()">ابدأ من جديد</button>
-        </div>
-    </div>
 
-    <script>
-        // مصفوفة الأسئلة
-        const quizData = [
-            { q: "أين ولد السيد المسيح؟", a: ["الناصرة", "بيت لحم", "مصر", "أريحا"], c: 1 },
-            { q: "ماذا قدم المجوس للملك؟", a: ["لبان", "مر", "ذهب", "ثياب"], c: 2 },
-            { q: "من هو الملاك الذي بشر مريم؟", a: ["ميخائيل", "غبريال", "رافائيل", "نوريال"], c: 1 },
-            { q: "أين وضع يسوع بعد ولادته؟", a: ["سرير", "كرسي", "مذود", "خيمة"], c: 2 },
-            { q: "من أول من عرف بالميلاد؟", a: ["الملوك", "الرعاة", "الكهنة", "الفريسيون"], c: 1 },
-            { q: "إلى أين هربت العائلة المقدسة؟", a: ["سوريا", "الأردن", "مصر", "روما"], c: 2 },
-            { q: "ماذا أرشد المجوس؟", a: ["نجم", "حلم", "كتاب", "صوت"], c: 0 },
-            { q: "ما مهنة يوسف النجار؟", a: ["صياد", "راعي", "نجار", "حداد"], c: 2 },
-            { q: "من هو الملك وقتها؟", a: ["بيلاطس", "هيرودس", "نيرون", "أغسطس"], c: 1 },
-            { q: "معنى اسم عمانوئيل؟", a: ["الله يحبنا", "الله معنا", "الله قوتنا", "المخلص"], c: 1 }
-        ];
+<script>
+    const questions = [
+        { q: "أين ولد السيد المسيح؟", a: ["الناصرة", "بيت لحم", "أورشليم", "مصر"], c: 1 },
+        { q: "ماذا قدم المجوس للملك؟", a: ["لبان", "مر", "ذهب", "ثياب"], c: 2 },
+        { q: "من بشر العذراء مريم؟", a: ["ميخائيل", "غبريال", "رافائيل", "نوريال"], c: 1 },
+        { q: "أين وضع يسوع بعد ولادته؟", a: ["سرير", "كرسي", "مذود", "خيمة"], c: 2 },
+        { q: "من هم أول من عرفوا بالميلاد؟", a: ["الملوك", "الرعاة", "الكهنة", "الفريسيون"], c: 1 },
+        { q: "إلى أين هربت العائلة المقدسة؟", a: ["سوريا", "الأردن", "مصر", "روما"], c: 2 },
+        { q: "ماذا أرشد المجوس للمكان؟", a: ["نجم", "حلم", "كتاب", "صوت"], c: 0 },
+        { q: "ما مهنة يوسف النجار؟", a: ["صياد", "راعي", "نجار", "حداد"], c: 2 },
+        { q: "من هو الملك وقتها؟", a: ["بيلاطس", "هيرودس", "نيرون", "أغسطس"], c: 1 },
+        { q: "معنى اسم عمانوئيل؟", a: ["الله يحبنا", "الله معنا", "الله قوتنا", "المخلص"], c: 1 }
+    ];
 
-        let current = 0;
-        let score = 0;
+    let index = 0;
+    let score = 0;
 
-        const qEl = document.getElementById("q-text");
-        const optEl = document.getElementById("options-grid");
-        const nextBtn = document.getElementById("next-btn");
+    function loadQuestion() {
+        const current = questions[index];
+        document.getElementById("question").innerText = current.q;
+        const optionsDiv = document.getElementById("options");
+        optionsDiv.innerHTML = "";
+        document.getElementById("next-btn").style.display = "none";
 
-        function load() {
-            const data = quizData[current];
-            qEl.innerText = data.q;
-            optEl.innerHTML = "";
-            nextBtn.style.display = "none";
+        current.a.forEach((opt, i) => {
+            const btn = document.createElement("div");
+            btn.className = "option";
+            btn.innerText = opt;
+            btn.onclick = () => check(btn, i);
+            optionsDiv.appendChild(btn);
+        });
+    }
 
-            data.a.forEach((ans, i) => {
-                const div = document.createElement("div");
-                div.className = "option";
-                div.innerText = ans;
-                div.onclick = () => check(div, i);
-                optEl.appendChild(div);
-            });
+    function check(btn, i) {
+        const correct = questions[index].c;
+        const all = document.querySelectorAll(".option");
+        all.forEach(o => o.classList.add("disabled"));
+
+        if (i === correct) {
+            btn.classList.add("correct");
+            score++;
+        } else {
+            btn.classList.add("wrong");
+            all[correct].classList.add("correct");
         }
+        document.getElementById("next-btn").style.display = "block";
+    }
 
-        function check(div, i) {
-            const correct = quizData[current].c;
-            const all = document.querySelectorAll(".option");
-            all.forEach(d => d.classList.add("disabled"));
-
-            if(i === correct) {
-                div.classList.add("correct");
-                score++;
-            } else {
-                div.classList.add("wrong");
-                all[correct].classList.add("correct");
-            }
-            nextBtn.style.display = "block";
+    document.getElementById("next-btn").onclick = () => {
+        index++;
+        if (index < questions.length) {
+            loadQuestion();
+        } else {
+            document.getElementById("quiz-box").innerHTML = <h2>انتهت المسابقة! ✨</h2><h3>نتيجتك: ${score} من 10</h3><button onclick="location.reload()" style="padding:10px; cursor:pointer;">إعادة</button>;
         }
+    };
 
-        nextBtn.onclick = () => {
-            current++;
-            if(current < quizData.length) {
-                load();
-            } else {
-                document.getElementById("q-text").style.display = "none";
-                optEl.style.display = "none";
-                nextBtn.style.display = "none";
-                document.getElementById("result").style.display = "block";
-                document.getElementById("final-score").innerText = score + " من 10";
-            }
-        };
+    // تشغيل أول سؤال
+    loadQuestion();
+</script>
 
-        // تشغيل الكود فوراً
-        load();
-    </script>
 </body>
 </html>
